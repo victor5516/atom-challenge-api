@@ -1,0 +1,294 @@
+openapi: 3.0.0
+info:
+  title: Atom Challenge API
+  version: 1.0.0
+  description: A simple API for task management
+components:
+  schemas:
+    User:
+      type: object
+      required:
+        - email
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the user
+        email:
+          type: string
+          description: The email of the user
+      example:
+        id: d5fE_asz
+        email: user@example.com
+    Task:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        id:
+          type: string
+          description: The auto-generated id of the task
+        title:
+          type: string
+          description: The title of the task
+        description:
+          type: string
+          description: The description of the task
+        completed:
+          type: boolean
+          description: The status of the task
+        createdAt:
+          type: string
+          format: date-time
+          description: The date the task was created
+      example:
+        id: t123
+        title: Sample Task
+        description: This is a sample task description.
+        completed: false
+        createdAt: '2023-07-25T15:00:00.000Z'
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          description: The status of the response (SUCCESS or ERROR)
+        statusCode:
+          type: integer
+          description: The HTTP status code
+        message:
+          type: string
+          description: A message describing the result
+        result:
+          type: object
+          description: The actual result of the response
+    UserResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            result:
+              $ref: '#/components/schemas/User'
+      example:
+        status: SUCCESS
+        statusCode: 200
+        message: User found
+        result:
+          id: d5fE_asz
+          email: user@example.com
+    UserIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            result:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: The auto-generated id of the user
+      example:
+        status: SUCCESS
+        statusCode: 201
+        message: User created
+        result:
+          id: d5fE_asz
+    TaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            result:
+              type: array
+              items:
+                $ref: '#/components/schemas/Task'
+      example:
+        status: SUCCESS
+        statusCode: 200
+        message: Tasks retrieved
+        result:
+          - id: t123
+            title: Sample Task
+            description: This is a sample task description.
+            completed: false
+            createdAt: '2023-07-25T15:00:00.000Z'
+    TaskIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - type: object
+          properties:
+            result:
+              type: object
+              properties:
+                id:
+                  type: string
+                  description: The auto-generated id of the task
+      example:
+        status: SUCCESS
+        statusCode: 201
+        message: Task created
+        result:
+          id: t123
+tags:
+  - name: Users
+    description: The users managing API
+  - name: Tasks
+    description: The tasks managing API
+paths:
+  /users/{email}:
+    get:
+      summary: Get the user by email
+      tags: [Users]
+      parameters:
+        - in: path
+          name: email
+          schema:
+            type: string
+          required: true
+          description: The user email
+      responses:
+        200:
+          description: The user description by email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        404:
+          description: The user was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /users:
+    post:
+      summary: Create a new user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        201:
+          description: The user was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserIdResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /tasks:
+    get:
+      summary: Get all tasks
+      tags: [Tasks]
+      responses:
+        200:
+          description: A list of tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    post:
+      summary: Create a new task
+      tags: [Tasks]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        201:
+          description: The task was successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskIdResponse'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /tasks/{taskId}:
+    put:
+      summary: Update a task
+      tags: [Tasks]
+      parameters:
+        - in: path
+          name: taskId
+          schema:
+            type: string
+          required: true
+          description: The id of the task to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        200:
+          description: The task was successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        400:
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    delete:
+      summary: Delete a task
+      tags: [Tasks]
+      parameters:
+        - in: path
+          name: taskId
+          schema:
+            type: string
+          required: true
+          description: The id of the task to delete
+      responses:
+        200:
+          description: The task was successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        500:
+          description: An error occurred on the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'

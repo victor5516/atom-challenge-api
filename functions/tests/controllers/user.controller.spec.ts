@@ -9,8 +9,10 @@ import {stub, restore} from "sinon";
 
 
 describe("User API", () => {
-  let token: string;
 
+  afterEach(() => {
+    restore();
+  });
 
   it("should create a new user", async function() {
     this.timeout(5000);
@@ -18,7 +20,7 @@ describe("User API", () => {
     const newUser: User = {
       email: "testuser@example.com",
     };
-    stub(userService, "loginService").resolves("fake-jwt-token");
+
     stub(userService, "addUser").resolves({ id: "1234" });
 
     const response = await request(app)
@@ -32,7 +34,7 @@ describe("User API", () => {
         newUser: {
           id: "1234",
         },
-        token: "fake-jwt-token",
+
       }
     };
 
@@ -40,39 +42,42 @@ describe("User API", () => {
     expect(response.body).to.be.eql(responseBody);
 
 
-    restore();
+
   });
 
   it("should get the created user", async function() {
     this.timeout(5000);
-    stub(userService, "loginService").resolves("fake-jwt-token");
+
     stub(userService, "getUserByEmail").resolves({
       email: "fake.email@email.com",
       id: "1234"
     });
     const response = await request(app)
       .get(`/users/${encodeURIComponent("testuser@example.com")}`)
-      .set("Authorization", `Bearer ${token}`);
+
 
     const responseBody = {
       status: "SUCCESS",
       statusCode: 200,
       message: "User found",
       result: {
-        token: "fake-jwt-token",
+        user: {
+          email: "fake.email@email.com",
+          id: "1234"
+        },
       },
     };
     expect(response.status).to.equal(200);
     expect(response.body).to.be.eql(responseBody);
-    restore();
+
   });
 
   it("should return 404 for a non-existing user", async function () {
     this.timeout(5000);
-    stub(userService, "loginService").resolves(null);
+    stub(userService, "getUserByEmail").resolves(null);
     const response = await request(app)
       .get("/users/nonexistentuser@example.com")
-      .set("Authorization", `Bearer ${token}`);
+
 
     expect(response.status).to.equal(404);
   });

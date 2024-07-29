@@ -1,5 +1,4 @@
-import {NextFunction, Request, Response} from "express";
-
+import { NextFunction, Request, Response } from "express";
 
 /**
  * Class representing a custom response handler.
@@ -33,7 +32,14 @@ export class ResponseHandler {
   }
 }
 
-
+/**
+ * Middleware to handle responses and send an appropriate JSON response.
+ *
+ * @param {ResponseHandler} info - The response handler instance.
+ * @param {Request} _req - The Express request object (unused).
+ * @param {Response} res - The Express response object.
+ * @param {NextFunction} next - The next middleware function in the stack.
+ */
 export const handleResponse = (
   info: ResponseHandler,
   _req: Request,
@@ -45,7 +51,7 @@ export const handleResponse = (
   }
 
   if (info instanceof ResponseHandler) {
-    const {statusCode, message, result} = info;
+    const { statusCode, message, result } = info;
 
     res.status(statusCode).json({
       status: "SUCCESS",

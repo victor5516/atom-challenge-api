@@ -16,17 +16,16 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@types/luxon": "^3.4.2",
-    "bcrypt": "^5.1.1",
-    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
     "firebase-admin": "^12.3.0",
     "firebase-functions": "^5.0.0",
     "jsonwebtoken": "^9.0.2",
-    "luxon": "^3.4.4"
+    "luxon": "^3.4.4",
+    "@types/luxon": "^3.4.2"
   },
   "devDependencies": {
+
     "@types/chai": "^4.3.16",
     "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.7",
