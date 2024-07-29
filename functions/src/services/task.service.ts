@@ -11,7 +11,7 @@ export const getTasks = async (): Promise<Task[]> => {
   return tasks;
 };
 
-export const addTask = async (task: Task): Promise<{ id: string }> => {
+export const addTask = async (task: Partial<Task>): Promise<{ id: string }> => {
   const result = await TaskCollection.add({
     ...task,
     completed: false,

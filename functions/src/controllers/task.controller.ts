@@ -28,7 +28,7 @@ export const addTask = async (
   try {
     const task = req.body;
     const newTask = await taskService.addTask(task);
-    next(new ResponseHandler(200, newTask, "Task created"));
+    next(new ResponseHandler(201, newTask, "Task created"));
   } catch (error) {
     log(error);
     res.status(500).send({message: error});

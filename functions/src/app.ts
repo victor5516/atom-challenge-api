@@ -1,6 +1,6 @@
-import * as express from "express";
-import * as cors from "cors";
-import * as bodyParser from "body-parser";
+import  express from "express";
+import  cors from "cors";
+import  bodyParser from "body-parser";
 import taskRoutes from "./routes/tasks.routes";
 import userRoutes from "./routes/users.routes";
 import {handleError} from "./handlers/error.handler";

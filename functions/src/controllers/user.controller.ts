@@ -35,7 +35,7 @@ export const addUser = async (
       newUser,
       token
     }
-    next(new ResponseHandler(200, response, "User created"));
+    next(new ResponseHandler(201, response, "User created"));
   } catch (error) {
     next(new ErrorHandler(500, "Internal server Error"));
   }

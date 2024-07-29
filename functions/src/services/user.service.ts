@@ -2,9 +2,9 @@ import {User} from "../models/user.interface";
 
 import {db} from "../config/firestore";
 import {generateToken} from "../config/jwtConfig";
-
+const UserCollection = db.collection("users");
 export const getUserByEmail = async (email: string): Promise<User | null> => {
-  const snapshot = await db.collection("users").
+  const snapshot = await UserCollection.
     where("email", "==", email).
     get();
   if (snapshot.empty) {
@@ -14,8 +14,8 @@ export const getUserByEmail = async (email: string): Promise<User | null> => {
   }
 };
 
-export const addUser = async (user: User): Promise<{ id: string }> => {
-  const result = await db.collection("users").add(user);
+export const addUser = async (user: Partial<User>): Promise<{ id: string }> => {
+  const result = await UserCollection.add(user);
   return {id: result.id};
 };
 
